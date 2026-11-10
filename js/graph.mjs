@@ -43,10 +43,15 @@ export function createGraphDrive({ fetch: fetchImpl, getToken }) {
     let token = null;
     try {
       token = await getToken();
-    } catch {
+    } catch (error) {
+      if (error?.name === "SignInNeededError" || error?.code === "auth") throw error;
       token = null;
     }
-    if (!token) throw new SignInNeededError();
+    if (!token) {
+      const error = new Error("Could not reach the rain file. Your readings are still on this phone.");
+      error.name = "ReachError";
+      throw error;
+    }
     return fetchFn(url, {
       method: options.method || "GET",
       headers: {

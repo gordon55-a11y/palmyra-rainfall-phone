@@ -65,6 +65,13 @@ export function readingFromText(raw, { dry = false } = {}) {
   return { ok: true, mm };
 }
 
+/** Dry days stay in the file. The month list shows rain only. */
+export function rainDaysInMonth(days, monthKey) {
+  return Object.keys(days || {})
+    .filter((iso) => iso.startsWith(`${monthKey}-`) && Number(days[iso]?.mm) > 0)
+    .sort();
+}
+
 export function canonicalDays(days) {
   const clean = {};
   for (const iso of Object.keys(days || {}).sort()) {

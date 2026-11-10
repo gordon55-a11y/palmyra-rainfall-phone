@@ -1,5 +1,6 @@
 import { createAuth } from "./auth.mjs";
-import { createGraphDrive } from "./graph.mjs";
+import { SignInNeededError, createGraphDrive } from "./graph.mjs";
+import { rainDaysInMonth } from "./merge.mjs";
 import { pastRain } from "./past.mjs";
 import { idbStore } from "./store.mjs";
 import { createSync } from "./sync.mjs";
@@ -53,7 +54,9 @@ function paintBanner() {
     el.hidden = false;
     el.classList.add("off");
     const strong = document.createElement("strong");
-    strong.textContent = `Offline, ${n} ${readingWord(n)} saved on phone`;
+    strong.textContent = n
+      ? `Offline, ${n} ${readingWord(n)} saved on phone`
+      : "Offline. These are the rain figures saved on this phone.";
     el.appendChild(strong);
     for (const item of view.pending) {
       const line = document.createElement("div");
@@ -70,7 +73,9 @@ function paintBanner() {
     button.type = "button";
     button.className = "banner sign";
     button.id = "sign-in";
-    button.textContent = n ? `Sign in to send ${n} saved ${readingWord(n)}` : "Sign in to check the rain file";
+    button.textContent = n
+      ? `Sign in to send ${n} saved ${readingWord(n)}`
+      : (view.cached ? "Sign in to update the rain figures" : "Sign in to check the rain file");
     button.addEventListener("click", () => { void askToSignIn(); });
     el.appendChild(button);
     if (n) {
@@ -104,11 +109,11 @@ function paintLog() {
   const list = $("month-days");
   list.textContent = "";
   const monthKey = today.slice(0, 7);
-  const rows = Object.keys(days).filter((iso) => iso.startsWith(monthKey)).sort();
+  const rows = rainDaysInMonth(days, monthKey);
   if (!rows.length) {
     const empty = document.createElement("p");
     empty.className = "empty-days";
-    empty.textContent = "Nothing logged this month yet.";
+    empty.textContent = "No rain logged this month yet.";
     list.appendChild(empty);
   } else {
     for (const iso of rows) {
@@ -199,10 +204,18 @@ function paintPast() {
 
 function paint() {
   if (!view) return;
+  const note = $("figures-note");
+  if (view.cached) {
+    note.hidden = true;
+    note.textContent = "";
+  } else {
+    note.hidden = false;
+    note.textContent = "No rain figures on this phone yet. Sign in once while you have a signal. After that, they stay here with no network.";
+  }
   paintBanner();
   paintLog();
   paintPast();
-  if (view.warning && !view.offline) showStatus("failed", "Not saved", view.warning);
+  if (view.warning && !view.offline && !view.needsSignIn) showStatus("failed", "Not saved", view.warning);
 }
 
 function showTab(name) {
@@ -247,22 +260,48 @@ async function boot() {
   const preview = previewView();
   if (preview) {
     view = preview;
+    if (view.cached == null) view.cached = Boolean(view.past || view.book || (view.log && view.log.days));
     if (!view.past && view.book && view.log) {
       view.past = pastRain(view.book, view.log.days || {}, preview.today || johannesburgToday());
     }
     paint();
     return;
   }
-  auth = await createAuth();
-  const drive = createGraphDrive({ fetch: window.fetch.bind(window), getToken: () => auth.getToken() });
+  const online = () => navigator.onLine !== false;
+  const drive = createGraphDrive({
+    fetch: window.fetch.bind(window),
+    getToken: async () => {
+      if (!auth) return null;
+      const renewal = await auth.renew();
+      if (renewal.status === "renewal-failed" || renewal.status === "none") throw new SignInNeededError();
+      return renewal.token;
+    },
+  });
   sync = createSync({
     drive,
     store: idbStore(),
     now: johannesburgNow,
-    online: () => navigator.onLine !== false,
+    online,
   });
-  view = await sync.init();
+  view = await sync.load();
   paint();
+  try {
+    auth = await createAuth({ online });
+  } catch {
+    auth = null;
+    return;
+  }
+  if (!online()) return;
+  const renewal = await auth.renew();
+  if (renewal.status === "ready") {
+    view = await sync.refresh();
+    paint();
+    return;
+  }
+  if (renewal.status === "renewal-failed" || renewal.status === "none") {
+    view = sync.noteSignedOut();
+    paint();
+  }
 }
 
 $("tab-log").addEventListener("click", () => showTab("log"));

@@ -22,7 +22,9 @@ Do that again when a newer SAWS extract or farm book is built. The phone picks i
 
 ## Sign in
 
-Use the personal Microsoft account gordonbrown24@gmail.com. The first time, tap **Sign in to send** or **Sign in to check the rain file**. After that, the last copy stays on the phone, so the gauge can be written down with no signal.
+Use the personal Microsoft account gordonbrown24@gmail.com. Sign in once. The rain figures then open from the copy kept on the phone, including when there is no network.
+
+On an iPhone, Safari and the home-screen icon do not share a sign-in. Add the page to the Home Screen, open that icon, and sign in once there. That sign-in stays with the icon. You do not sign in again to see the figures.
 
 ## What the page may open
 

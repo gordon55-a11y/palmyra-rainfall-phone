@@ -32,6 +32,7 @@ export function createSync({
     pending: [],
     warning: "",
     needsSignIn: false,
+    cached: false,
   };
 
   function view() {
@@ -41,8 +42,9 @@ export function createSync({
       book: state.book,
       pending: state.pending.map((item) => ({ ...item })),
       warning: state.warning || "",
-      needsSignIn: Boolean(state.needsSignIn),
+      needsSignIn: Boolean(state.needsSignIn) && online(),
       offline: !online(),
+      cached: Boolean(state.cached),
       past: pastRain(state.book, overlaid, now().slice(0, 10)),
     };
   }
@@ -55,6 +57,7 @@ export function createSync({
       pending: state.pending,
       warning: state.warning,
       needsSignIn: state.needsSignIn,
+      cached: Boolean(state.cached),
     });
   }
 
@@ -64,7 +67,7 @@ export function createSync({
       return;
     }
     if (error?.name === "SignInNeededError" || error?.code === "auth") {
-      state.needsSignIn = true;
+      if (online()) state.needsSignIn = true;
       return;
     }
     state.warning = "Could not reach the rain file. Your readings are still on this phone.";
@@ -114,6 +117,7 @@ export function createSync({
         state.etag = got.etag || state.etag;
         state.pending = [];
         state.needsSignIn = false;
+        state.cached = true;
         state.warning = "";
         await persist();
         return view();
@@ -137,6 +141,7 @@ export function createSync({
         state.etag = put.etag || state.etag;
         state.pending = [];
         state.needsSignIn = false;
+        state.cached = true;
         state.warning = "";
         await persist();
         await pruneBackups();
@@ -167,6 +172,7 @@ export function createSync({
     state.log = withDays(got.body.days || {}, got.body.updatedAt || now());
     state.etag = got.etag || state.etag;
     state.needsSignIn = false;
+    state.cached = true;
     try {
       const book = await drive.getBook();
       if (book) state.book = book;
@@ -177,7 +183,7 @@ export function createSync({
     return view();
   }
 
-  async function init() {
+  async function load() {
     const saved = await store.load();
     if (saved && saved.log) {
       state = {
@@ -185,10 +191,27 @@ export function createSync({
         book: saved.book || null,
         etag: saved.etag || null,
         pending: Array.isArray(saved.pending) ? saved.pending : [],
-        warning: saved.warning || "",
-        needsSignIn: Boolean(saved.needsSignIn),
+        warning: "",
+        needsSignIn: false,
+        cached: Boolean(saved.cached || saved.etag || saved.book),
       };
     }
+    return view();
+  }
+
+  function noteSignedOut() {
+    state.needsSignIn = online();
+    return view();
+  }
+
+  async function refresh() {
+    if (!online()) return view();
+    if (state.pending.length) return flush();
+    return pull();
+  }
+
+  async function init() {
+    await load();
     if (online()) {
       try {
         if (state.pending.length) await flush();
@@ -230,5 +253,5 @@ export function createSync({
     return queue(date, parsed.mm, note);
   }
 
-  return { init, view, saveText, saveDry, flush, pull };
+  return { init, load, refresh, noteSignedOut, view, saveText, saveDry, flush, pull };
 }
