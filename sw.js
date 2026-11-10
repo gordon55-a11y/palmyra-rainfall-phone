@@ -1,10 +1,10 @@
 /* Caches the phone page only. The rain file is never cached here. */
-const CACHE = "palmyra-rain-pwa-v3";
+const CACHE = "palmyra-rain-pwa-v4";
 const SHELL = [
   "./index.html",
   "./manifest.webmanifest",
-  "./css/app.css",
-  "./js/app.mjs",
+  "./css/app.css?v=4",
+  "./js/app.mjs?v=4",
   "./js/auth.mjs",
   "./js/config.mjs",
   "./js/graph.mjs",
@@ -59,7 +59,14 @@ self.addEventListener("fetch", (event) => {
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
     try {
-      const fresh = await fetch(event.request);
+      // GitHub Pages sends max-age=600. A plain fetch uses that copy, so a new
+      // page can load with yesterday's script. no-cache rechecks before use.
+      // A navigation Request cannot take a new cache mode, so this builds a
+      // fresh request from the address.
+      const fresh = await fetch(new Request(event.request.url, {
+        cache: "no-cache",
+        credentials: "same-origin",
+      }));
       if (fresh && fresh.ok) await cache.put(event.request, fresh.clone());
       return fresh;
     } catch {
