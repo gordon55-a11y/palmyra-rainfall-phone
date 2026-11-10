@@ -1,5 +1,5 @@
 /* Caches the phone page only. The rain file is never cached here. */
-const CACHE = "palmyra-rain-pwa-v2";
+const CACHE = "palmyra-rain-pwa-v3";
 const SHELL = [
   "./index.html",
   "./manifest.webmanifest",

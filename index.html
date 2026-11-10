@@ -65,18 +65,39 @@
   </div>
 
   <div id="panel-past" role="tabpanel" hidden>
-    <section class="card" id="past-root">
-      <p class="kicker">This season so far</p>
+    <section class="card" id="past-season">
+      <p class="kicker">This season and last season</p>
       <p class="range" id="past-range">July to June</p>
-      <p class="big" id="past-total">—</p>
-      <p class="past-compare" id="past-average"></p>
+      <div class="past-pair">
+        <div>
+          <p class="pair-label">This season</p>
+          <p class="big" id="past-total">—</p>
+        </div>
+        <div>
+          <p class="pair-label">Last season</p>
+          <p class="big" id="past-last-total">—</p>
+        </div>
+      </div>
       <p class="past-compare" id="past-last"></p>
       <p class="book-note" id="past-missing" hidden></p>
+    </section>
+    <section class="card" id="past-average-card">
+      <p class="kicker">Average of previous seasons</p>
+      <p class="big" id="past-average-total">—</p>
+      <p class="past-compare" id="past-average"></p>
+      <p class="past-compare" id="past-compare"></p>
+    </section>
+    <section class="card" id="past-months-card">
+      <p class="kicker">Month by month</p>
       <div id="past-months"></div>
-      <h3 class="past-heading" id="past-driest-title">Ten driest seasons</h3>
-      <div id="past-driest"></div>
-      <h3 class="past-heading" id="past-wettest-title">Ten wettest seasons</h3>
+    </section>
+    <section class="card" id="past-wettest-card">
+      <p class="kicker" id="past-wettest-title">Ten wettest seasons</p>
       <div id="past-wettest"></div>
+    </section>
+    <section class="card">
+      <p class="kicker" id="past-driest-title">Ten driest seasons</p>
+      <div id="past-driest"></div>
     </section>
   </div>
 

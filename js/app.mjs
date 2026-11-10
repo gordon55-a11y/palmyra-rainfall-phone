@@ -155,6 +155,14 @@ function fillRank(id, rows) {
   }
 }
 
+function versus(current, other, otherName) {
+  if (current == null || other == null || Number.isNaN(Number(current)) || Number.isNaN(Number(other))) return "";
+  const diff = Math.round((Number(current) - Number(other)) * 10) / 10;
+  if (diff === 0) return `The same as ${otherName}.`;
+  const word = diff > 0 ? "more than" : "less than";
+  return `${mmText(Math.abs(diff))} ${word} ${otherName}.`;
+}
+
 function paintPast() {
   const past = view && view.past;
   const list = $("past-months");
@@ -163,14 +171,22 @@ function paintPast() {
   fillRank("past-wettest", []);
   if (!past) {
     $("past-total").textContent = "—";
+    $("past-last-total").textContent = "—";
+    $("past-average-total").textContent = "—";
     $("past-average").textContent = view && view.book ? "" : "The rainfall book is not on this phone yet.";
+    $("past-compare").textContent = "";
     $("past-last").textContent = "";
     return;
   }
-  $("past-range").textContent = `July ${past.seasonStart.slice(0, 4)} to June ${past.seasonEnd.slice(0, 4)}`;
+  $("past-range").textContent = `July ${past.seasonStart.slice(0, 4)} to June ${past.seasonEnd.slice(0, 4)}, to ${past.asOfText}`;
   $("past-total").textContent = mmText(past.seasonMm);
-  $("past-average").textContent = `Average to ${past.asOfText}: ${mmText(past.seasonAverage)} (${past.averageLabel})`;
-  $("past-last").textContent = `${past.lastSeasonText}: ${mmText(past.lastSeasonMm)}`;
+  $("past-last-total").textContent = mmText(past.lastSeasonMm);
+  $("past-last").textContent = past.lastSeasonMm == null
+    ? "Last season is not in the book for this date."
+    : versus(past.seasonMm, past.lastSeasonMm, "last season");
+  $("past-average-total").textContent = mmText(past.seasonAverage);
+  $("past-average").textContent = `To ${past.asOfText}, ${past.averageLabel}.`;
+  $("past-compare").textContent = versus(past.seasonMm, past.seasonAverage, "the average");
   const names = past.missingMonths || [];
   const missing = $("past-missing");
   if (names.length) {

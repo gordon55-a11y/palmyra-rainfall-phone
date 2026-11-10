@@ -190,15 +190,42 @@ button {
 }
 
 .past-compare {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   font-size: 18px;
   font-weight: 650;
+  line-height: 1.35;
 }
 
-.past-heading {
-  margin: 18px 0 0;
-  font-size: 18px;
+.past-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px 12px;
+  margin-top: 10px;
+}
+
+.past-pair .big {
+  font-size: 32px;
+  overflow-wrap: anywhere;
+}
+
+.pair-label {
+  margin: 0;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
   font-weight: 750;
+}
+
+#panel-past .card {
+  margin-top: 14px;
+}
+
+#past-months .past-row:first-child,
+#past-wettest .past-row:first-child,
+#past-driest .past-row:first-child {
+  border-top: none;
+  padding-top: 8px;
 }
 
 .past-row {
