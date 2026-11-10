@@ -1,0 +1,379 @@
+:root {
+  --bg: #f4f1ea;
+  --ink: #1c241e;
+  --muted: #5c6b61;
+  --green: #1f3d2b;
+  --green-2: #2f6b45;
+  --card: #fffcf7;
+  --line: #d9d2c5;
+  --bad: #8d2e24;
+  --bad-bg: #f8e4e0;
+  --ok-bg: #e2f0e6;
+  --warn-bg: #f8ead4;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 20px;
+  line-height: 1.35;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-right: calc(16px + env(safe-area-inset-right));
+  padding-bottom: calc(28px + env(safe-area-inset-bottom));
+  padding-left: calc(16px + env(safe-area-inset-left));
+  max-width: 520px;
+  margin: 0 auto;
+  overflow-wrap: anywhere;
+}
+
+header {
+  background: var(--green);
+  color: #f4f1ea;
+  margin: 0 calc(-16px - env(safe-area-inset-right)) 12px calc(-16px - env(safe-area-inset-left));
+  padding: 18px calc(18px + env(safe-area-inset-right)) 14px calc(18px + env(safe-area-inset-left));
+}
+
+header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+}
+
+header p {
+  margin: 4px 0 0;
+  font-size: 18px;
+  color: #d5e4d8;
+}
+
+label {
+  display: block;
+  font-weight: 750;
+  margin: 12px 0 6px;
+}
+
+form {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+input[type="text"],
+input[type="date"] {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  font-size: 28px;
+  font-weight: 700;
+  padding: 12px;
+  border-radius: 14px;
+  border: 2px solid var(--line);
+  background: white;
+  color: var(--ink);
+  text-align: left;
+}
+
+/* iPhone Safari draws a date box wider than the screen unless these are set. */
+input[type="date"] {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  font-size: 22px;
+  min-height: 56px;
+  text-align: left;
+}
+
+input[type="date"]::-webkit-datetime-edit,
+input[type="date"]::-webkit-date-and-time-value {
+  display: inline-block;
+  min-width: 0;
+  text-align: left;
+  padding: 0;
+}
+
+.banner {
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin: 0 0 12px;
+  font-weight: 750;
+}
+
+.banner strong { display: block; font-size: 20px; }
+
+.banner.off {
+  background: #f8ead4;
+  color: #5c4a22;
+}
+
+.banner.sign {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: white;
+  color: var(--green);
+  border: 2px solid var(--green-2);
+  min-height: 60px;
+}
+
+.banner .wait {
+  display: block;
+  margin-top: 4px;
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.pending-line {
+  margin: 2px 0 0;
+  font-size: 18px;
+  font-weight: 650;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 12px;
+  min-width: 0;
+}
+
+button.tab {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+  margin-top: 0;
+  min-height: 60px;
+  padding: 14px 8px;
+  font-size: 20px;
+  font-weight: 750;
+  border-radius: 14px;
+  border: 2px solid var(--green-2);
+  background: white;
+  color: var(--green);
+}
+
+button.tab.active {
+  background: var(--green-2);
+  color: white;
+}
+
+button {
+  display: block;
+  width: 100%;
+  font-size: 22px;
+  font-weight: 750;
+  padding: 14px 12px;
+  border-radius: 14px;
+  border: 0;
+  margin-top: 10px;
+  min-height: 54px;
+}
+
+.past-compare {
+  margin: 6px 0 0;
+  font-size: 18px;
+  font-weight: 650;
+}
+
+.past-heading {
+  margin: 18px 0 0;
+  font-size: 18px;
+  font-weight: 750;
+}
+
+.past-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 12px;
+  align-items: baseline;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+  min-width: 0;
+}
+
+.past-name {
+  font-weight: 750;
+  min-width: 0;
+}
+
+.past-figure {
+  text-align: right;
+  min-width: 0;
+}
+
+.past-figure strong {
+  display: block;
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+}
+
+.past-figure span {
+  display: block;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+button.save {
+  background: var(--green-2);
+  color: white;
+}
+
+button.dry {
+  background: #ebe4d7;
+  color: var(--ink);
+}
+
+button.gap {
+  background: white;
+  color: var(--green);
+  border: 2px solid var(--green-2);
+}
+
+button.day {
+  background: white;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 650;
+  text-align: left;
+}
+
+button:active { transform: scale(0.99); }
+
+.help {
+  color: var(--muted);
+  font-size: 16px;
+  margin: 8px 0 0;
+}
+
+.status {
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin: 0 0 12px;
+}
+
+.status strong {
+  display: block;
+  font-size: 28px;
+}
+
+.status .detail {
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.status.saved {
+  background: var(--ok-bg);
+  color: var(--green);
+}
+
+.status.failed {
+  background: var(--bad-bg);
+  color: var(--bad);
+}
+
+.editing {
+  background: var(--warn-bg);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-weight: 750;
+  margin: 0 0 12px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 12px 14px;
+  margin-top: 12px;
+}
+
+.facts {
+  display: grid;
+  gap: 10px;
+}
+
+.fact + .fact {
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+
+.kicker {
+  margin: 0;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 750;
+}
+
+.range {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 17px;
+}
+
+.book-note {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.farm-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  background: white;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 12px;
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: 650;
+  text-align: left;
+}
+
+.big {
+  margin: 2px 0 0;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.big.small {
+  font-size: 22px;
+  line-height: 1.25;
+}
+
+.day-list { margin-top: 8px; }
+
+.empty-days {
+  color: var(--muted);
+  margin: 8px 0 0;
+}
